@@ -7,6 +7,7 @@ import pathlib
 import re
 import xml.etree.ElementTree as ET
 
+from json_output import dumps_compact_json
 from sec_http import fetch_bytes as fetch_sec_bytes
 
 USER_AGENT = os.environ.get(
@@ -509,7 +510,7 @@ def main() -> None:
     if payload.get("shares_note") != shares_note:
         payload["shares_note"] = shares_note
 
-    output_text = json.dumps(payload, ensure_ascii=False, indent=2)
+    output_text = dumps_compact_json(payload)
     if output_text != original_text:
         DATA_PATH.write_text(output_text, encoding="utf-8")
         print(f"Wrote {DATA_PATH}")

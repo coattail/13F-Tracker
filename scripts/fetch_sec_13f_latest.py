@@ -5,6 +5,8 @@ import datetime as dt
 import json
 import pathlib
 
+from json_output import dumps_compact_json
+
 
 BASE_DIR = pathlib.Path(__file__).resolve().parents[1]
 HISTORY_PATH = BASE_DIR / "data" / "sec-13f-history.json"
@@ -79,7 +81,7 @@ def main() -> None:
                 payload["generated_at_utc"] = preserved_ts
             print("No effective latest snapshot changes detected; preserving generated_at_utc.")
 
-    output_text = json.dumps(payload, ensure_ascii=False, indent=2)
+    output_text = dumps_compact_json(payload)
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     if output_text == existing_raw_text:
         print(f"No file changes for {OUTPUT_PATH}")

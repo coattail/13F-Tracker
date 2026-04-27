@@ -15,6 +15,7 @@ import pathlib
 import re
 import xml.etree.ElementTree as ET
 
+from json_output import dumps_compact_json
 from sec_http import fetch_bytes as fetch_sec_bytes
 
 USER_AGENT = os.environ.get(
@@ -830,7 +831,7 @@ def main() -> None:
                 payload["generated_at_utc"] = preserved_ts
             print("No effective SEC history changes detected; preserving generated_at_utc.")
 
-    output_text = json.dumps(payload, ensure_ascii=False, indent=2)
+    output_text = dumps_compact_json(payload)
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     if output_text == existing_raw_text:
         print(f"No file changes for {OUTPUT_PATH}")

@@ -1,0 +1,12 @@
+@media (max-width: 680px) {
+  .change-group {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .change-grid-head,
+  .change-pro-list {
+    min-width: 430px;
+  }
+}

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import http.client
 import os
 import re
 import time
@@ -170,7 +171,13 @@ def fetch_bytes(
                     detail += " (rate-limit)"
                 logger(f"[retry {attempt}/{max_attempts}] {url} -> {detail}; wait {wait_seconds:.1f}s")
             time.sleep(wait_seconds)
-        except (urllib.error.URLError, TimeoutError, RuntimeError) as exc:
+        except (
+            urllib.error.URLError,
+            TimeoutError,
+            RuntimeError,
+            http.client.RemoteDisconnected,
+            http.client.IncompleteRead,
+        ) as exc:
             last_error = exc
             wait_seconds = _compute_wait_seconds(attempt, None, None)
             if logger is not None:

@@ -81,6 +81,9 @@ MANAGERS = [
         "name": "Pershing Square",
         "org": "Pershing Square Capital Management, L.P.",
         "cik": 1336528,
+        # Pershing Square Capital Management switched to a 13F-NT in 2026Q2;
+        # its holdings are now reported by public parent Pershing Square Inc.
+        "ciks": [1336528, 2026053],
         "disclosure": "13F-HR",
         "color": "#7b2f3a",
     },

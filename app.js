@@ -2773,12 +2773,14 @@ function getLatestSnapshotForInvestor(investor) {
   return { quarter: latestQuarter, snapshot };
 }
 
-function getInvestorAumSeries(investor) {
+function getInvestorAumSeries(investor, throughQuarter = null) {
   if (!investor) {
     return [];
   }
+  const throughOrder = throughQuarter ? parseQuarterToOrder(throughQuarter) : -1;
   const quarters = getAvailableQuartersForInvestor(investor);
   return quarters
+    .filter((quarter) => throughOrder < 0 || parseQuarterToOrder(quarter) <= throughOrder)
     .map((quarter) => {
       const snapshot = getDisplaySnapshot(investor, quarter);
       if (!snapshot || !Number.isFinite(snapshot.total) || snapshot.total <= 0) {
@@ -3427,9 +3429,9 @@ function renderAumTrendPanel() {
     return;
   }
 
-  const series = getInvestorAumSeries(investor);
-  if (series.length < 2) {
-    elements.aumTrendPanel.innerHTML = `<div class="empty">Insufficient filing history to draw this trend.</div>`;
+  const series = getInvestorAumSeries(investor, state.quarter);
+  if (!series.length) {
+    elements.aumTrendPanel.innerHTML = `<div class="empty">No filing history is available through this quarter.</div>`;
     return;
   }
 
@@ -3459,7 +3461,8 @@ function renderAumTrendPanel() {
   const axisFormatter = createTrendAxisFormatter(yMax);
 
   const points = series.map((item, idx) => {
-    const x = padding.left + (idx / (series.length - 1)) * innerWidth;
+    const xRatio = series.length === 1 ? 1 : idx / (series.length - 1);
+    const x = padding.left + xRatio * innerWidth;
     const y = padding.top + ((yMax - item.total) / range) * innerHeight;
     return { ...item, x, y };
   });
@@ -3505,7 +3508,7 @@ function renderAumTrendPanel() {
     return true;
   });
   const latestYear = parseQuarter(series[series.length - 1].quarter).year;
-  const tailYear = Math.max(2026, latestYear);
+  const tailYear = latestYear;
   if (!seenYear.has(tailYear)) {
     xLabelEntries.push({
       x: width - padding.right,
@@ -3516,6 +3519,9 @@ function renderAumTrendPanel() {
 
   const first = series[0];
   const last = series[series.length - 1];
+  const latestQuarter = getLatestQuarterForInvestor(investor);
+  const lastMetricLabel =
+    last.quarter === latestQuarter ? "Latest Holdings Net Assets" : "Selected Quarter Holdings Net Assets";
   const cumulative = first.total > 0 ? last.total / first.total - 1 : 0;
   const multiple = first.total > 0 ? last.total / first.total : 0;
   const positiveTone = cumulative >= 0;
@@ -3601,7 +3607,7 @@ function renderAumTrendPanel() {
           <em>${formatQuarter(first.quarter)}</em>
         </div>
         <div class="trend-metric">
-          <span>Latest Holdings Net Assets</span>
+          <span>${lastMetricLabel}</span>
           <strong>${valueText(last.total)}</strong>
           <em>${formatQuarter(last.quarter)} · ${last.filingDate}</em>
         </div>

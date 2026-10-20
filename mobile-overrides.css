@@ -10,3 +10,40 @@
     min-width: 430px;
   }
 }
+
+/* Mobile browser and embedded WebView layout. Keep page zoom available. */
+@media (max-width: 760px), (max-width: 1024px) and (max-height: 600px) and (pointer: coarse) {
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea { font-size: 16px; min-width: 0; max-width: 100%; }
+  button, select, a { touch-action: manipulation; }
+  button, select { min-height: 44px; }
+  input[type="range"] { touch-action: pan-y; }
+  .table-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+}
+
+@media (max-width: 760px), (max-width: 1024px) and (max-height: 600px) and (pointer: coarse) {
+  .layout, .footer-note { width: 100%; padding-left: max(10px, env(safe-area-inset-left)); padding-right: max(10px, env(safe-area-inset-right)); }
+  .catalog-view, .detail-view, .catalog-shell, .panel, .holding-card, .evolution-main, .evolution-side { min-width: 0; }
+  .catalog-search-input { min-height: 44px; font-size: 16px; }
+  .catalog-search-clear { min-height: 44px; padding-inline: 10px; }
+  .detail-top-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .back-btn { min-height: 44px; }
+  .quarter-picker { width: 100%; }
+  .quarter-picker select { flex: 1; min-height: 44px; font-size: 16px; }
+  .detail-links a { min-height: 44px; display: inline-flex; align-items: center; }
+  .detail-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .evolution-panel { grid-template-columns: minmax(0, 1fr); }
+  .table-wrap { width: 100%; }
+  .table-wrap table { min-width: 600px; }
+  .change-group { max-width: 100%; }
+  .holdings-cards, .changes-cards { min-width: 0; }
+  .footer-note { gap: 10px; flex-wrap: wrap; }
+  .snapshot-btn { min-height: 44px; }
+  .mountain-wrap svg, .catalog-treemap-canvas svg { touch-action: pan-y; }
+}
+
+@media (max-width: 760px), (max-width: 1024px) and (max-height: 600px) and (pointer: coarse) {
+  .holding-card-body { grid-template-columns: minmax(0, 1fr); }
+  .holding-card-body > * { min-width: 0; }
+}
